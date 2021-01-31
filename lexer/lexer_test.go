@@ -3,7 +3,7 @@ package lexer
 import (
 	"testing"
 
-	"github.com/rumpl/monkey/token"
+	"github.com/rumpl/monkey-lang/token"
 )
 
 func TestNextToken(t *testing.T) {

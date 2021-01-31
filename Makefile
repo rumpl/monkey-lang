@@ -3,4 +3,4 @@ default:
 
 .PHONY: clean
 clean:
-	@rm monkey
+	@rm monkey-lang

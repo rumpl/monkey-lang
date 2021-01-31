@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"github.com/rumpl/monkey/token"
+	"github.com/rumpl/monkey-lang/token"
 )
 
 type Lexer struct {
