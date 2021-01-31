@@ -41,7 +41,7 @@ const (
 	RETURN   = "RETURN"
 )
 
-var keywords = map[string]TokenType{
+var keywords = map[string]Type{
 	"fn":     FUNCTION,
 	"let":    LET,
 	"true":   TRUE,
@@ -51,14 +51,15 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-type TokenType string
+type Type string
 
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
 }
 
-func LookupIdent(ident string) TokenType {
+// LookupIdent returns the right token type for a keyword
+func LookupIdent(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}

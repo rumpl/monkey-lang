@@ -4,6 +4,7 @@ import (
 	"github.com/rumpl/monkey-lang/token"
 )
 
+// Lexer is the lexer for the monkey language
 type Lexer struct {
 	input        string
 	position     int  // current position in input (points to current char)
@@ -11,6 +12,7 @@ type Lexer struct {
 	ch           byte // current char under examination
 }
 
+// New returns a new lexer
 func New(input string) *Lexer {
 	l := &Lexer{
 		input: input,
@@ -30,41 +32,41 @@ func (l *Lexer) readChar() {
 	}
 
 	l.position = l.readPosition
-	l.readPosition += 1
+	l.readPosition++
 }
 
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
-	} else {
-		return l.input[l.readPosition]
 	}
+
+	return l.input[l.readPosition]
 }
 
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 
-	for isLetter(l.ch) {
+	for l.isLetter() {
 		l.readChar()
 	}
 	return l.input[position:l.position]
 }
 
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' && ch == '_'
+func (l *Lexer) isLetter() bool {
+	return 'a' <= l.ch && l.ch <= 'z' || 'A' <= l.ch && l.ch <= 'Z' && l.ch == '_'
 }
 
 func (l *Lexer) readNumber() string {
 	position := l.position
 
-	for isDigit(l.ch) {
+	for l.isDigit() {
 		l.readChar()
 	}
 	return l.input[position:l.position]
 }
 
-func isDigit(ch byte) bool {
-	return '0' <= ch && ch <= '9'
+func (l *Lexer) isDigit() bool {
+	return '0' <= l.ch && l.ch <= '9'
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -73,6 +75,7 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
+// NextToken reads and returns the next valid token
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -125,11 +128,11 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
-		if isLetter(l.ch) {
+		if l.isLetter() {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
-		} else if isDigit(l.ch) {
+		} else if l.isDigit() {
 			tok.Literal = l.readNumber()
 			tok.Type = token.INT
 			return tok
@@ -144,6 +147,6 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-func newToken(tokenType token.TokenType, ch byte) token.Token {
+func newToken(tokenType token.Type, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
