@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strconv"
 
 	"github.com/rumpl/monkey-lang/token"
 )
@@ -49,7 +50,6 @@ type LetStatement struct {
 }
 
 func (ls *LetStatement) statementNode() {
-
 }
 
 func (ls *LetStatement) TokenLiteral() string {
@@ -78,7 +78,6 @@ type Identifier struct {
 }
 
 func (i *Identifier) expressionNode() {
-
 }
 
 func (i *Identifier) TokenLiteral() string {
@@ -89,13 +88,28 @@ func (i *Identifier) String() string {
 	return i.Value
 }
 
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+func (i *IntegerLiteral) expressionNode() {
+}
+
+func (i *IntegerLiteral) TokenLiteral() string {
+	return i.Token.Literal
+}
+
+func (i *IntegerLiteral) String() string {
+	return strconv.Itoa(int(i.Value))
+}
+
 type ReturnStatement struct {
 	Token       token.Token
 	ReturnValue Expression
 }
 
 func (r *ReturnStatement) statementNode() {
-
 }
 
 func (r *ReturnStatement) TokenLiteral() string {
@@ -122,8 +136,8 @@ type ExpressionStatement struct {
 }
 
 func (es *ExpressionStatement) statementNode() {
-
 }
+
 func (es *ExpressionStatement) TokenLiteral() string {
 	return es.Token.Literal
 }
