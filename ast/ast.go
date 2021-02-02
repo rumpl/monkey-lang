@@ -104,6 +104,30 @@ func (i *IntegerLiteral) String() string {
 	return strconv.Itoa(int(i.Value))
 }
 
+type PrefixExpression struct {
+	Token    token.Token
+	Right    Expression
+	Operator string
+}
+
+func (p *PrefixExpression) expressionNode() {
+}
+
+func (p *PrefixExpression) TokenLiteral() string {
+	return p.Token.Literal
+}
+
+func (p *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(p.Operator)
+	out.WriteString(p.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
 type ReturnStatement struct {
 	Token       token.Token
 	ReturnValue Expression
