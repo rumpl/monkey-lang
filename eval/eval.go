@@ -99,6 +99,14 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 		return &object.Integer{Value: li.Value * ri.Value}
 	case "/":
 		return &object.Integer{Value: li.Value / ri.Value}
+	case "<":
+		return nativeBoolToBooleanObject(li.Value < ri.Value)
+	case ">":
+		return nativeBoolToBooleanObject(li.Value > ri.Value)
+	case "!=":
+		return nativeBoolToBooleanObject(li.Value != ri.Value)
+	case "==":
+		return nativeBoolToBooleanObject(li.Value == ri.Value)
 	default:
 		return Null
 	}
