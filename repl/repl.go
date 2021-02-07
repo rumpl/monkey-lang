@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/rumpl/monkey-lang/eval"
 	"github.com/rumpl/monkey-lang/lexer"
 	"github.com/rumpl/monkey-lang/parser"
-	"github.com/rumpl/monkey-lang/token"
 )
 
 const PROMPT = "🐒 "
@@ -32,10 +32,9 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		fmt.Fprintln(out, program.String())
-
-		for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
-			fmt.Fprintf(out, "%+v\n", tok)
+		evaluated := eval.Eval(program)
+		if evaluated != nil {
+			fmt.Fprintln(out, evaluated.Inspect())
 		}
 	}
 }
