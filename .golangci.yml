@@ -28,6 +28,6 @@ linters:
     - varcheck
 linters-settings:
   gocyclo:
-    min-complexity: 21
+    min-complexity: 30
   lll:
     line-length: 200
