@@ -87,6 +87,33 @@ func TestBangOperator(t *testing.T) {
 	}
 }
 
+func TestIfElseExpressions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{"if (true) { 10 }", 10},
+		{"if (false) { 10 }", nil},
+		{"if (1) { 10 }", 10},
+		{"if (1 < 2) { 10 }", 10},
+		{"if (1 > 2) { 10 }", nil},
+		{"if (1 > 2) { 10 } else { 20 }", 20},
+		{"if (1 < 2) { 10 } else { 20 }", 10},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			evaluated := testEval(tt.input)
+			integer, ok := tt.expected.(int)
+			if ok {
+				testIntegerObject(t, evaluated, int64(integer))
+			} else {
+				testNullObject(t, evaluated)
+			}
+		})
+	}
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -95,32 +122,33 @@ func testEval(input string) object.Object {
 	return Eval(program)
 }
 
-func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
+func testIntegerObject(t *testing.T, obj object.Object, expected int64) {
 	result, ok := obj.(*object.Integer)
 	if !ok {
 		t.Fatalf("object is not Integer, got %t", obj)
-		return false
 	}
 
 	if result.Value != expected {
 		t.Fatalf("object has wrong value, got %d, want %d", result.Value, expected)
+	}
+}
+
+func testNullObject(t *testing.T, obj object.Object) bool {
+	if obj != Null {
+		t.Errorf("object is not NULL, got %T", obj)
 		return false
 	}
 
 	return true
 }
 
-func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
+func testBooleanObject(t *testing.T, obj object.Object, expected bool) {
 	result, ok := obj.(*object.Boolean)
 	if !ok {
 		t.Fatalf("object is not Boolean, got %t", obj)
-		return false
 	}
 
 	if result.Value != expected {
 		t.Fatalf("object has wrong value, got %t, want %t", result.Value, expected)
-		return false
 	}
-
-	return true
 }
