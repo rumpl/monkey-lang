@@ -282,7 +282,7 @@ func evalForLoop(fl *ast.ForExpression, env *object.Environment) object.Object {
 		c := Eval(fl.StopCondition, env)
 		cond, ok := c.(*object.Boolean)
 		if !ok {
-			return newError("condition must be boolean")
+			return newError("condition " + cond.Inspect() + "must be a boolean")
 		}
 
 		if cond == False {
