@@ -12,12 +12,14 @@ import (
 const (
 	_ int = iota
 	LOWEST
+	ASSIGN
 	EQUALS      // ==
 	LESSGREATER // < or >
 	SUM         // +
 	PRODUCT     // *
 	PREFIX      // -X or !X
 	CALL        // func(X)
+
 )
 
 var precedences = map[token.Type]int{
@@ -30,6 +32,7 @@ var precedences = map[token.Type]int{
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
 	token.LPAREN:   CALL,
+	token.ASSIGN:   ASSIGN,
 }
 
 type (
@@ -71,6 +74,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.LPAREN, p.parseGrouped)
 
 	p.registerPrefix(token.IF, p.parseIfExpression)
+	p.registerPrefix(token.FOR, p.parseForExpression)
 
 	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 
@@ -84,6 +88,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 
+	p.registerInfix(token.ASSIGN, p.parseAssignExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
 
 	return p
@@ -314,6 +319,38 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	return block
 }
 
+func (p *Parser) parseForExpression() ast.Expression {
+	expression := &ast.ForExpression{
+		Token: p.curToken,
+	}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+	expression.Initial = p.parseLetStatement()
+
+	p.nextToken()
+	expression.StopCondition = p.parseExpression(LOWEST)
+
+	p.nextToken()
+	p.nextToken()
+	expression.Increment = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	expression.Statements = p.parseBlockStatement()
+
+	return expression
+}
+
 func (p *Parser) parseFunctionLiteral() ast.Expression {
 	lit := &ast.FunctionLiteral{
 		Token: p.curToken,
@@ -370,6 +407,21 @@ func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	}
 
 	exp.Arguments = p.parseCallArguments()
+
+	return exp
+}
+
+func (p *Parser) parseAssignExpression(left ast.Expression) ast.Expression {
+	exp := &ast.AssignExpression{
+		Token: p.curToken,
+	}
+	p.nextToken()
+	exp.Left = &ast.Identifier{
+		Token: p.curToken,
+		Value: p.curToken.Literal,
+	}
+
+	exp.Expression = p.parseExpression(LOWEST)
 
 	return exp
 }

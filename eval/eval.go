@@ -73,6 +73,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return args[0]
 		}
 		return applyFunction(function, args)
+	case *ast.AssignExpression:
+		return evalAssignment(node, env)
+	case *ast.ForExpression:
+		return evalForLoop(node, env)
 	}
 
 	return nil
@@ -255,6 +259,40 @@ func evalIdentifier(id *ast.Identifier, env *object.Environment) object.Object {
 	}
 
 	return val
+}
+
+func evalAssignment(id *ast.AssignExpression, env *object.Environment) object.Object {
+	_, ok := env.Get(id.Left.Value)
+	if !ok {
+		return newError("identifier not found: " + id.Left.Value)
+	}
+
+	a := Eval(id.Expression, env)
+
+	return env.Set(id.Left.Value, a)
+}
+
+func evalForLoop(fl *ast.ForExpression, env *object.Environment) object.Object {
+	Eval(fl.Initial, env)
+
+	var res object.Object
+	res = Null
+
+	for {
+		c := Eval(fl.StopCondition, env)
+		cond, ok := c.(*object.Boolean)
+		if !ok {
+			return newError("condition must be boolean")
+		}
+
+		if cond == False {
+			return res
+		}
+
+		res = Eval(fl.Statements, env)
+
+		Eval(fl.Increment, env)
+	}
 }
 
 func isTruthy(obj object.Object) bool {

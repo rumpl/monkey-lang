@@ -22,6 +22,7 @@ if (5 < 10) {
 let result = add(five, ten);
 10 == 10;
 10 != 9;
+for (let i = 0; i < 10; i = i + 1) { i }
 `
 
 	tests := []struct {
@@ -99,9 +100,30 @@ let result = add(five, ten);
 		{token.NEQ, "!="},
 		{token.INT, "9"},
 		{token.SEMICOLON, ";"},
+		{token.FOR, "for"},
+		{token.LPAREN, "("},
+		{token.LET, "let"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "="},
+		{token.INT, "0"},
+		{token.SEMICOLON, ";"},
+		{token.IDENT, "i"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.IDENT, "i"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "i"},
+		{token.PLUS, "+"},
+		{token.INT, "1"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "i"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 
+	// for (let i = 0; i < 10; i = i + 1) { i }
 	l := New(input)
 
 	for i, tt := range tests {

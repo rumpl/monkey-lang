@@ -258,6 +258,36 @@ func TestFunctionApplication(t *testing.T) {
 	}
 }
 
+func TestAssignment(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"let a = 1; a = a + 1; a;", 2},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			testIntegerObject(t, testEval(tt.input), tt.expected)
+		})
+	}
+}
+
+func TestForLoop(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"for (let i = 0; i < 10; i = i + 1) { i }", 9},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			testIntegerObject(t, testEval(tt.input), tt.expected)
+		})
+	}
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)

@@ -112,6 +112,19 @@ func (e *Environment) Set(name string, val Object) Object {
 	return val
 }
 
+func (e *Environment) String() string {
+	var out bytes.Buffer
+	for k, v := range e.store {
+		out.WriteString(k)
+		out.WriteString(v.Inspect())
+	}
+	if e.outer != nil {
+		out.WriteString(e.outer.String())
+	}
+
+	return out.String()
+}
+
 type Function struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement

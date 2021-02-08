@@ -38,6 +38,7 @@ const (
 	FALSE    = "FALSE"
 	IF       = "IF"
 	ELSE     = "ELSE"
+	FOR      = "FOR"
 	RETURN   = "RETURN"
 )
 
@@ -48,6 +49,7 @@ var keywords = map[string]Type{
 	"false":  FALSE,
 	"if":     IF,
 	"else":   ELSE,
+	"for":    FOR,
 	"return": RETURN,
 }
 
