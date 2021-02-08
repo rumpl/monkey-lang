@@ -275,17 +275,10 @@ func evalAssignment(id *ast.AssignExpression, env *object.Environment) object.Ob
 func evalForLoop(fl *ast.ForExpression, env *object.Environment) object.Object {
 	Eval(fl.Initial, env)
 
-	var res object.Object
-	res = Null
+	var res object.Object = Null
 
 	for {
-		c := Eval(fl.StopCondition, env)
-		cond, ok := c.(*object.Boolean)
-		if !ok {
-			return newError("condition " + cond.Inspect() + "must be a boolean")
-		}
-
-		if cond == False {
+		if !isTruthy(Eval(fl.StopCondition, env)) {
 			return res
 		}
 
