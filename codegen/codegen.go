@@ -64,8 +64,7 @@ func (c *CG) Codegen(env *object.Environment) error {
 	llvmBuf, _ := c.targetMachine.EmitToMemoryBuffer(c.mod, llvm.ObjectFile)
 	_ = ioutil.WriteFile("out.o", llvmBuf.Bytes(), 0666)
 
-	exec.Command("cc", "out.o", "-fno-PIE", "-lc", "-o", "out").Run()
-	return nil
+	return exec.Command("cc", "out.o", "-fno-PIE", "-lc", "-o", "out").Run()
 }
 
 func (c *CG) codegen(node ast.Node, env *object.Environment) llvm.Value {

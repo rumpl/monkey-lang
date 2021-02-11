@@ -1,6 +1,2 @@
-github.com/ark-lang/go-llvm v0.0.0-20160421062927-31e6b69782fc h1:7iVmwERSFb5aMRLYFZpq6rBnZp6YtUsbaBwctTN67Vk=
-github.com/ark-lang/go-llvm v0.0.0-20160421062927-31e6b69782fc/go.mod h1:/c//MopJOjpeKd1JOiNhgePxGSeosbTSmcDZAr6iL20=
-github.com/rumpl/monkey v0.0.0-20100523150956-490827a3da47 h1:rUsUgGxjG80pHhcwCbu3nM9FbErRmqK/WLr4AAGLXfs=
-github.com/rumpl/monkey-lang v0.0.0-20210131182217-b52627d13443 h1:cf027RacrsHEbQkAmsC+riBxuGDKuH9TRTZlxbyqV8Q=
 tinygo.org/x/go-llvm v0.0.0-20210206225315-7fe719483a0f h1:FP5Do5omlQ/dLQ3Hfy7oyJo69VS5Hn46rZw004r0lGU=
 tinygo.org/x/go-llvm v0.0.0-20210206225315-7fe719483a0f/go.mod h1:fv1F0BSNpxMfCL0zF3M4OPFbgYHnhtB6ST0HvUtu/LE=
