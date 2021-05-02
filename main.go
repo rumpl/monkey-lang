@@ -40,7 +40,6 @@ func compile(file string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func printParserErrors(errors []string) {

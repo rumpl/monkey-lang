@@ -27,9 +27,11 @@ func (c *CG) Codegen(env *object.Environment) error {
 	if err := llvm.InitializeNativeTarget(); err != nil {
 		return err
 	}
+
 	if err := llvm.InitializeNativeAsmPrinter(); err != nil {
 		return err
 	}
+
 	llvm.InitializeAllAsmParsers()
 
 	target, _ := llvm.GetTargetFromTriple(llvm.DefaultTargetTriple())
@@ -73,6 +75,24 @@ func (c *CG) codegen(node ast.Node, env *object.Environment) llvm.Value {
 		return c.codegenProgram(node, env)
 	case *ast.BlockStatement:
 		return c.codegenBlockStatement(node, env)
+	case *ast.CallExpression:
+		return c.builder.CreateCall(c.mod.NamedFunction(node.Function.String()), []llvm.Value{}, node.Function.String())
+	case *ast.FunctionStatement:
+		main := llvm.FunctionType(llvm.Int32Type(), []llvm.Type{}, false)
+		name := node.Name
+		entry := name
+		if name == "main" {
+			entry = "entry"
+		}
+		v := llvm.AddFunction(c.mod, name, main)
+
+		fmt.Println(name, entry)
+		block := llvm.AddBasicBlock(c.mod.NamedFunction(name), entry)
+		c.builder.SetInsertPoint(block, block.FirstInstruction())
+
+		c.codegen(node.Body, env)
+
+		return v
 	case *ast.FunctionLiteral:
 		main := llvm.FunctionType(llvm.Int32Type(), []llvm.Type{}, false)
 		v := llvm.AddFunction(c.mod, "main", main)
